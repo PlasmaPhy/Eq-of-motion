@@ -24,3 +24,10 @@ Where:
 - $q_0$ is a constant.
 - $F$ is the hypergeometric function.
 
+## Hamiltonian Equation
+
+The Hamiltonian $W$ with respect to $(\theta, \zeta, \psi, P_{\zeta})$ coordinates for the system is given by:
+
+```math
+W = \left(P_J + \frac{\psi}{q_0}F\left(\frac{\psi}{q_0}\right)\right)^2 \left(1 - \sqrt{2\psi}\cos(\theta)\right)^2 / 2 + m\left(1 - \sqrt{2\psi}\cos(\theta)\right)
+```
