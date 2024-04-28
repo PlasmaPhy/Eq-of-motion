@@ -1,5 +1,6 @@
 from scipy.special import hyp2f1
 import scipy
+from scipy.integrate import odeint
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -18,8 +19,11 @@ def runge_kutta4(f, t, y, h, m, q_0):
     k4 = h * f(t + h, y + k3, m, q_0)
     return y + (k1 + 2 * k2 + 2 * k3 + k4) / 6
 
+def solve_with_odeint(f, t0, y0, tf, h, m, q_0):
+    t_values = np.linspace(t0, tf, int(tf/h) + 1)  # Create time grid with more precision
+    return odeint(f, y0, t_values, args=(m, q_0))
 
-def paper_differential_equations(t, y, m, q_0):
+def paper_differential_equations(y, t, m, q_0):
     P_J = y[0]
     psi = y[1]
     J = y[2]
@@ -30,14 +34,15 @@ def paper_differential_equations(t, y, m, q_0):
     n = 2
 
     psi_p = psi/q_0*calc_hyp2f1(psi, q_0, q_wall, n)
-    q = q_0 *(1 + (psi)**2)**(1/2)
+    q = 1 #q_0 *(1 + (psi)**2)**(1/2)
 
-    der_theta = - ((1-(2*psi)*np.cos(theta))*(P_J + psi_p))/np.sqrt(2*psi) - m*np.cos(theta)/np.sqrt(2*psi) + (1-psi*np.cos(theta))**2*(P_J +psi_p)*q
+    der_theta = - ((1-(2*psi)*np.cos(theta))*(P_J + psi_p))/np.sqrt(2*psi)*np.cos(theta) - m*np.cos(theta)/np.sqrt(2*psi) + (1-psi*np.cos(theta))**2*(P_J +psi_p)*q
     der_psi = -(P_J + psi_p)**2*(1 - np.sqrt(psi))*np.sqrt(psi)*np.sin(theta) - m*psi*np.sin(theta)
     der_P_J = 0
     der_J = (P_J + psi_p)*(1 - psi*np.cos(theta))
 
     return np.array([der_P_J, der_psi, der_J, der_theta])
+
 
 def solve_runge_kutta4(f, t0, y0, tf, h, m, q_0):
     t_values = np.arange(t0, tf + h, h)
